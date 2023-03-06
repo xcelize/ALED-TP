@@ -2,6 +2,7 @@ import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {Dispatch, SetStateAction, useEffect} from 'react';
 import {Contact} from '../Types/Contact';
 import FormComponent from './FormComponent';
+import { Icon, Overlay } from 'react-native-elements';
 
 interface TypeProps {
   setModalState: Dispatch<SetStateAction<boolean>>;
@@ -11,29 +12,48 @@ interface TypeProps {
 
 const ModalForm = ({setModalState, modalState, item}: TypeProps) => {
   useEffect(() => {}, []);
-  const onClosed = () => {
-    setModalState(false);
+  const toggleOverlay = () => {
+    setModalState(!modalState);
   };
 
   return (
-    <Modal visible={modalState}>
-      <View style={styles.modal}>
-        <View
-          style={{marginTop: 30, alignItems: 'flex-end', marginRight: '10%'}}>
-          <Pressable onPress={() => onClosed()} style={{}}>
-            <Text>Fermer</Text>
-          </Pressable>
-        </View>
-        <View style={styles.formContainer}>
-          <FormComponent
+    <View>
+      <Overlay overlayStyle={{width: '75%', flex: 1, maxHeight: '80%'}} isVisible={modalState} onBackdropPress={toggleOverlay}>
+      <View style={{flex: 1, top:20, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
+        <Icon
+          raised
+          name='close'
+          color='#f50'
+          onPress={() => toggleOverlay()} />
+      </View>
+      <FormComponent
             item={item}
             modalState={modalState}
             setModalState={setModalState}
           />
-        </View>
-      </View>
-    </Modal>
+      </Overlay>
+    </View>
   );
+  // return (
+    
+  //   // <Modal visible={modalState}>
+  //   //   <View style={styles.modal}>
+  //   //     <View
+  //   //       style={{marginTop: 30, alignItems: 'flex-end', marginRight: '10%'}}>
+  //   //       <Pressable onPress={() => onClosed()} style={{}}>
+  //   //         <Text>Fermer</Text>
+  //   //       </Pressable>
+  //   //     </View>
+  //   //     <View style={styles.formContainer}>
+  //   //       <FormComponent
+  //   //         item={item}
+  //   //         modalState={modalState}
+  //   //         setModalState={setModalState}
+  //   //       />
+  //   //     </View>
+  //   //   </View>
+  //   // </Modal>
+  // );
 };
 
 const styles = StyleSheet.create({

@@ -13,9 +13,11 @@ function contacts(state = initialState, action: any) {
     case SETCONTACTS: {
       const newContact: Contact = action.value;
       newContact.recordID = state.id.toString();
+      let listeTemp: Contact[] = [...state.contactList, newContact].sort((a: Contact, b: Contact) => a.givenName.localeCompare(b.givenName));
+      listeTemp = listeTemp.sort((a,b) => a.priority - b.priority);
       nextState = {
         ...state,
-        contactList: [...state.contactList, newContact],
+        contactList: listeTemp,
         id: state.id + 1,
       };
       return nextState || state;
@@ -24,9 +26,11 @@ function contacts(state = initialState, action: any) {
       const filteredContacts: Contact[] = state.contactList.filter(
         e => e.recordID !== action.value.recordID,
       );
+      let listeTemp: Contact[] = [...filteredContacts, action.value].sort((a: Contact, b: Contact) => a.givenName.localeCompare(b.givenName));
+      listeTemp = listeTemp.sort((a,b) => b.priority - a.priority);
       nextState = {
         ...state,
-        contactList: [...filteredContacts, action.value],
+        contactList: listeTemp,
       };
       return nextState || state;
     }

@@ -12,12 +12,26 @@ import ContactList from './Components/ContactList';
 import {Provider} from 'react-redux';
 import {persistor, store} from './Store/Configure';
 import {PersistGate} from 'redux-persist/integration/react';
+import {NavigationContainer} from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import ContactsList from './Components/ContactList';
+import ImportContactList from './Components/ImportContactList';
+import Toast from 'react-native-toast-message';
+
+
+const Stack = createNativeStackNavigator();
 
 function App(): JSX.Element {
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}></PersistGate>
-      <ContactList />
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Listes des contacts">
+          <Stack.Screen name="Listes des contacts" component={ContactsList}  options={ {headerShown: false} } />
+          <Stack.Screen name="Importez des contacts" component={ImportContactList} />
+        </Stack.Navigator>
+      </NavigationContainer>
+      <Toast />
     </Provider>
   );
 }

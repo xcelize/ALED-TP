@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 import {SETCONTACTS, UPDATE_CONTACT} from '../Store/Actions/Contact';
+import { Input } from 'react-native-elements';
 
 interface TypesProps {
   item?: Contact;
@@ -20,22 +21,25 @@ interface TypesProps {
 const FormComponent = ({item, setModalState, modalState}: TypesProps) => {
   const [givenName, setGivenName] = useState(item?.givenName);
   const [phoneNumber, setPhoneNumber] = useState(item?.phoneNumber);
+  const [familyName, setFamilyName] = useState(item?.familyName);
   const dispach = useDispatch();
   const onSave = () => {
     if (item == null) {
       const contact: Contact = {
         recordID: '0',
         givenName: givenName,
-        familyName: '',
+        familyName: familyName,
         phoneNumber: phoneNumber,
+        priority: 1
       };
       dispach({type: SETCONTACTS, value: contact});
     } else {
       const editedContact: Contact = {
         recordID: item.recordID,
         givenName: givenName,
-        familyName: item.familyName,
+        familyName: familyName,
         phoneNumber: phoneNumber,
+        priority: item.priority
       };
       dispach({type: UPDATE_CONTACT, value: editedContact});
     }
@@ -48,24 +52,13 @@ const FormComponent = ({item, setModalState, modalState}: TypesProps) => {
     }
   }, [item]);
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{marginTop: 30}}>
       <Text style={styles.title}>Detail contact</Text>
       <View style={styles.formContainer}>
         <View style={styles.inputContainer}>
-          <Text style={{marginBottom: 5, marginLeft: 5}}>Nom du contact</Text>
-          <TextInput
-            style={styles.input}
-            value={givenName}
-            onChangeText={setGivenName}
-          />
-        </View>
-        <View style={styles.inputContainer}>
-          <Text style={{marginBottom: 5, marginLeft: 5}}>Nom du contact</Text>
-          <TextInput
-            style={styles.input}
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-          />
+          <Input placeholder='Nom du contact' value={givenName} onChangeText={setGivenName} />
+          <Input placeholder='Prenom du contact' value={familyName} onChangeText={setFamilyName} />
+          <Input placeholder='Numéro du contact' value={phoneNumber} onChangeText={setPhoneNumber} />
         </View>
         <Pressable style={styles.addButton} onPress={() => onSave()}>
           <Text style={styles.buttonsText}>Enregistrer</Text>
