@@ -19,31 +19,44 @@ interface TypesProps {
 }
 
 const FormComponent = ({item, setModalState, modalState}: TypesProps) => {
+
   const [givenName, setGivenName] = useState(item?.givenName);
   const [phoneNumber, setPhoneNumber] = useState(item?.phoneNumber);
   const [familyName, setFamilyName] = useState(item?.familyName);
+  const [checkValidGivenName, setValidGivenName] = useState(false);
+
   const dispach = useDispatch();
-  const onSave = () => {
-    if (item == null) {
-      const contact: Contact = {
-        recordID: '0',
-        givenName: givenName,
-        familyName: familyName,
-        phoneNumber: phoneNumber,
-        priority: 1
-      };
-      dispach({type: SETCONTACTS, value: contact});
+
+  const handleValidGivenName = (text: string) => {
+    if (text != '') {
+      setValidGivenName(true);
     } else {
-      const editedContact: Contact = {
-        recordID: item.recordID,
-        givenName: givenName,
-        familyName: familyName,
-        phoneNumber: phoneNumber,
-        priority: item.priority
-      };
-      dispach({type: UPDATE_CONTACT, value: editedContact});
+      setValidGivenName(false);
     }
-    setModalState(false);
+  }
+
+  const onSave = () => {
+      if (item == null) {
+        const contact: Contact = {
+          recordID: '0',
+          givenName: givenName,
+          familyName: familyName,
+          phoneNumber: phoneNumber,
+          priority: 1
+        };
+        dispach({type: SETCONTACTS, value: contact});
+      } else {
+        const editedContact: Contact = {
+          recordID: item.recordID,
+          givenName: givenName,
+          familyName: familyName,
+          phoneNumber: phoneNumber,
+          priority: item.priority
+        };
+        dispach({type: UPDATE_CONTACT, value: editedContact});
+      }
+      setModalState(false);
+    }
   };
   useEffect(() => {
     if (item == null) {
@@ -51,14 +64,15 @@ const FormComponent = ({item, setModalState, modalState}: TypesProps) => {
       setPhoneNumber('');
     }
   }, [item]);
+  
   return (
     <SafeAreaView style={{marginTop: 30}}>
       <Text style={styles.title}>Detail contact</Text>
       <View style={styles.formContainer}>
+        
         <View style={styles.inputContainer}>
-          <Input placeholder='Nom du contact' value={givenName} onChangeText={setGivenName} />
           <Input placeholder='Prenom du contact' value={familyName} onChangeText={setFamilyName} />
-          <Input placeholder='Numéro du contact' value={phoneNumber} onChangeText={setPhoneNumber} />
+          <Input placeholder='Numéro du contact' value={phoneNumber} onChangeText={setPhoneNumber} keyboardType='number-pad' />
         </View>
         <Pressable style={styles.addButton} onPress={() => onSave()}>
           <Text style={styles.buttonsText}>Enregistrer</Text>

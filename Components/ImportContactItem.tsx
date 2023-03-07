@@ -19,7 +19,7 @@ const ImportContactItem = ({item}: TypesProps) => {
         const contact: Contact = {
             familyName: item.familyName,
             givenName: item.givenName,
-            phoneNumber: item.phoneNumbers[0].number,
+            phoneNumber: item.phoneNumbers[0]?.number,
             recordID: '0',
             priority: 1
         }
@@ -44,7 +44,7 @@ const ImportContactItem = ({item}: TypesProps) => {
         <Card.Title style={{fontSize: 20}}>{item.displayName}</Card.Title>
         <Card.Divider/>
         <Text style={{marginBottom: 10, textAlign: 'center', fontSize:25, fontWeight:'bold'}}>
-          {item.phoneNumbers[0].number}
+          {item.phoneNumbers[0]?.number}
         </Text>
         <View style={{flex: 1, flexDirection: 'row', gap: 8, alignContent: 'center', justifyContent: 'center'}}>
           <Button
