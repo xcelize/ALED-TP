@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 import {SETCONTACTS, UPDATE_CONTACT} from '../Store/Actions/Contact';
-import { Input } from 'react-native-elements';
+import { Button, Input } from 'react-native-elements';
 
 interface TypesProps {
   item?: Contact;
@@ -24,14 +24,25 @@ const FormComponent = ({item, setModalState, modalState}: TypesProps) => {
   const [phoneNumber, setPhoneNumber] = useState(item?.phoneNumber);
   const [familyName, setFamilyName] = useState(item?.familyName);
   const [checkValidGivenName, setValidGivenName] = useState(false);
+  const [checkValidPhoneNumber, setCheckValidPhoneNumber] = useState(false);
 
   const dispach = useDispatch();
 
-  const handleValidGivenName = (text: string) => {
+  const handleValidGivenName = (text?: string): void => {
+    setGivenName(text);
     if (text != '') {
       setValidGivenName(true);
     } else {
       setValidGivenName(false);
+    }
+  }
+
+  const handleValidPhoneNumber = (text: string): void => {
+    setPhoneNumber(text);
+    if (text != '') {
+      (text.startsWith("+") && text.length <= 11) || (text.startsWith("0") && text.length <= 10) ? setCheckValidPhoneNumber(true) : setCheckValidPhoneNumber(false);
+    } else {
+      setCheckValidPhoneNumber(false);
     }
   }
 
@@ -56,8 +67,8 @@ const FormComponent = ({item, setModalState, modalState}: TypesProps) => {
         dispach({type: UPDATE_CONTACT, value: editedContact});
       }
       setModalState(false);
-    }
   };
+
   useEffect(() => {
     if (item == null) {
       setGivenName('');
@@ -66,57 +77,31 @@ const FormComponent = ({item, setModalState, modalState}: TypesProps) => {
   }, [item]);
   
   return (
-    <SafeAreaView style={{marginTop: 30}}>
-      <Text style={styles.title}>Detail contact</Text>
-      <View style={styles.formContainer}>
-        
-        <View style={styles.inputContainer}>
-          <Input placeholder='Prenom du contact' value={familyName} onChangeText={setFamilyName} />
-          <Input placeholder='Numéro du contact' value={phoneNumber} onChangeText={setPhoneNumber} keyboardType='number-pad' />
-        </View>
-        <Pressable style={styles.addButton} onPress={() => onSave()}>
-          <Text style={styles.buttonsText}>Enregistrer</Text>
-        </Pressable>
+    <SafeAreaView style={{ height: '75%' }}>
+      <View style={{ flex: 1, justifyContent: 'space-around', alignItems: 'center', flexDirection: 'column' }}>
+          <View style={{ width: 250 }}>
+            <Input placeholder='Nom du contact' value={givenName} onChangeText={(text) => handleValidGivenName(text)} />
+            {
+              !checkValidGivenName ? (
+                <Text style={{ color: 'red', fontSize: 14, alignSelf: 'center', bottom: 20 }}>Le nom ne peut pas être vide</Text>
+              ) : null
+            }
+          </View>
+          <View style={{ width: 250 }}>
+            <Input placeholder='Prenom du contact' value={familyName} onChangeText={(text) => handleValidPhoneNumber(text)} />
+          </View>
+          <View style={{ width: 250 }}>
+            <Input style={{ flex: 1 }} placeholder='Numéro du contact' value={phoneNumber} onChangeText={(text) => handleValidPhoneNumber(text)} keyboardType='number-pad' />
+            {
+              !checkValidPhoneNumber ? (
+                <Text style={{ color: 'red', fontSize: 14, alignSelf: 'center', bottom: 20 }}>Le numéro de téléphone est invalide</Text>
+              ) : null
+            }
+          </View> 
+          <Button onPress={() => onSave()} disabled={!checkValidGivenName || !checkValidPhoneNumber} title='Enregistrer' />
       </View>
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  input: {
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-  },
-  inputContainer: {
-    width: '75%',
-  },
-  formContainer: {
-    marginTop: 15,
-    height: '80%',
-    alignItems: 'center',
-    flexDirection: 'column',
-    gap: 12,
-    position: 'relative',
-  },
-  addButton: {
-    backgroundColor: 'rgb(85,0,255)',
-    padding: 10,
-    borderRadius: 10,
-    position: 'absolute',
-    bottom: 0,
-  },
-  title: {
-    fontSize: 25,
-    textAlign: 'center',
-    marginTop: 50,
-  },
-  buttonsText: {
-    fontFamily: 'Roboto',
-    fontSize: 20,
-    color: 'white',
-    paddingHorizontal: 15,
-  },
-});
 export default FormComponent;

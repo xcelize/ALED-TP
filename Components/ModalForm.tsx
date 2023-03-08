@@ -18,10 +18,12 @@ const ModalForm = ({setModalState, modalState, item}: TypeProps) => {
 
   return (
     <View>
-      <Overlay overlayStyle={{width: '75%', flex: 1, maxHeight: '80%'}} isVisible={modalState} onBackdropPress={toggleOverlay}>
-      <View style={{flex: 1, top:20, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
+      <Overlay overlayStyle={{width: '75%', flex: 1, maxHeight: '75%'}} isVisible={modalState} onBackdropPress={toggleOverlay}>
+      <View style={{ flexDirection: 'row' }}>
+        <Text style={{ flex: 1, textAlign: 'center', top: 20, left: 10, alignContent:'center', fontSize: 25, fontWeight: '900' }}>Detail contact</Text>
         <Icon
           raised
+          style={{ flex:1, alignItems: 'flex-end', backgroundColor: 'red' }}
           name='close'
           color='#f50'
           onPress={() => toggleOverlay()} />
