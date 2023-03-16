@@ -1,9 +1,12 @@
 import {Contact} from '../Types/Contact';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {PermissionsAndroid, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {Dispatch, SetStateAction, useState} from 'react';
 import ModalForm from './ModalForm';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
 import { Button, Card, Icon } from 'react-native-elements';
+import CallDetectorManager from 'react-native-call-detection';
+import SendSMS from 'react-native-sms'
+
 
 interface TypesProps {
   item: Contact;
@@ -13,9 +16,41 @@ interface TypesProps {
 
 const ContactItem = ({item}: TypesProps) => {
   const [modalState, setModalState] = useState(false);
-  const call = (callNumber: string) => {
+  
+  const call = async (callNumber: string) => {
+    await requestPerms();
     RNImmediatePhoneCall.immediatePhoneCall(callNumber);
+    const states = new CallDetectorManager((event, number) => {
+      
+      if (event == 'Disconnected' || event == 'Missed') {
+        if (callNumber.startsWith("07") || callNumber.startsWith("06") || callNumber.startsWith("+33")) {
+          SendSMS.send({
+            body: 'The default body of the SMS!',
+            recipients: [callNumber],
+            successTypes: ['sent' as SendSMS.AndroidSuccessTypes , 'queued' as SendSMS.AndroidSuccessTypes],
+            allowAndroidSendWithoutReadPermission: true
+          }, (completed, cancelled, error) => {
+     
+            console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
+     
+        });
+        }
+      }
+    }, false);
+    return () => {
+      states && states.dispose();
+    };
   };
+
+  async function requestPerms() {
+    const grants = await PermissionsAndroid.requestMultiple([
+      'android.permission.READ_PHONE_STATE',
+      'android.permission.READ_CALL_LOG',
+      'android.permission.READ_SMS',
+      'android.permission.SEND_SMS',
+    ]);
+  }
+
   return (
     <Card>
       <Card.Title style={{fontSize: 20}}>{item.givenName} {item.familyName}</Card.Title>

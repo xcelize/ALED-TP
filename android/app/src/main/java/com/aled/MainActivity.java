@@ -6,6 +6,8 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactActivityDelegate;
 import com.github.wumke.RNImmediatePhoneCall.RNImmediatePhoneCallPackage;  // <--- import
 import android.os.Bundle;
+import com.react.SmsPackage;
+import com.tkporter.sendsms.SendSMSPackage;
 
 public class MainActivity extends ReactActivity {
 
@@ -43,7 +45,9 @@ public class MainActivity extends ReactActivity {
    @Override
       public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
           RNImmediatePhoneCallPackage.onRequestPermissionsResult(requestCode, permissions, grantResults); // very important event callback
+          
           super.onRequestPermissionsResult(requestCode, permissions, grantResults);
       }
+
 
 }

@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import {FlatList, Image, PermissionsAndroid, Pressable, StyleSheet, Text, View} from 'react-native';
 import {Contact} from '../Types/Contact';
 import {useDispatch, useSelector} from 'react-redux';
 import {AnyAction} from 'redux';
 import ContactItem from './ContactItem';
 import ModalForm from './ModalForm';
 import { Icon } from 'react-native-elements';
+
 
 const ContactsList = ({navigation}) => {
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -16,9 +17,6 @@ const ContactsList = ({navigation}) => {
   useEffect(() => {
     setContacts(contactReducer.contactList);
   }, [contactReducer]);
-  useEffect(() => {
-  }, [contacts]);
-
 
   return (
     <>
