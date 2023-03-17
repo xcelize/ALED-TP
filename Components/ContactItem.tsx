@@ -21,11 +21,11 @@ const ContactItem = ({item}: TypesProps) => {
     await requestPerms();
     RNImmediatePhoneCall.immediatePhoneCall(callNumber);
     const states = new CallDetectorManager((event, number) => {
-      
+      console.log(event);
       if (event == 'Disconnected' || event == 'Missed') {
         if (callNumber.startsWith("07") || callNumber.startsWith("06") || callNumber.startsWith("+33")) {
           SendSMS.send({
-            body: 'The default body of the SMS!',
+            body: '⚠️ Je suis en danger ⚠️ ( Ce message est envoyé depuis ALED une application qui protège vos proches )',
             recipients: [callNumber],
             successTypes: ['sent' as SendSMS.AndroidSuccessTypes , 'queued' as SendSMS.AndroidSuccessTypes],
             allowAndroidSendWithoutReadPermission: true
